@@ -70,6 +70,105 @@
         "foldkit/selection-submodel-factory-at-module-scope": "error",
         "foldkit/wrap-child-output-in-got-message": "error"
       }
+    },
+    {
+      "files": [
+        "**/entry.server.ts",
+        "**/entry.server.tsx",
+        "**/server/**/*.ts",
+        "**/server/**/*.tsx",
+        "**/prerender.ts"
+      ],
+      "excludeFiles": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "alert",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "cancelAnimationFrame",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "cancelIdleCallback",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "confirm",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "customElements",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "document",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "getComputedStyle",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "history",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "IntersectionObserver",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "localStorage",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "location",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "matchMedia",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "MutationObserver",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "navigator",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "prompt",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "requestAnimationFrame",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "requestIdleCallback",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "ResizeObserver",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "screen",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "sessionStorage",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          },
+          {
+            "name": "window",
+            "message": "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+          }
+        ]
+      }
     }
   ],
   "ignorePatterns": [
@@ -91,6 +190,9 @@
     "packages/website/public/example-apps-embed/",
     "packages/website/playwright-report/",
     "packages/website/test-results/",
-    "packages/website/src/snippet/"
+    "packages/website/src/snippet/",
+    "!packages/website/scripts/prerender.ts",
+    "!examples/*/scripts/prerender.ts",
+    "!packages/vite-plugin-foldkit/test/fixtures/"
   ]
 }

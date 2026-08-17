@@ -59,39 +59,109 @@ const basePlugin = Plugin.define({
   },
 })
 
+type RestrictedGlobal = Readonly<{ name: string; message: string }>
+
+type OverrideRule =
+  | Plugin.RuleSeverity
+  | readonly [Plugin.RuleSeverity, ...ReadonlyArray<RestrictedGlobal>]
+
+type Override = Readonly<{
+  files: Array<string>
+  excludeFiles?: Array<string>
+  rules: Record<string, OverrideRule>
+}>
+
 type OverriddenConfig = Plugin.OxlintConfig & {
-  overrides: Array<{
-    files: Array<string>
-    rules: Record<string, Plugin.RuleSeverity>
-  }>
+  overrides: Array<Override>
 }
 
 const testFilePatterns = ['**/*.test.ts', '**/*.test.tsx']
+
+const serverFilePatterns = [
+  '**/entry.server.ts',
+  '**/entry.server.tsx',
+  '**/server/**/*.ts',
+  '**/server/**/*.tsx',
+  '**/prerender.ts',
+]
+
+const serverRestrictedGlobalMessage =
+  "Not in Foldkit's portable server-entry contract. Use a server API available in every deployment target or pass the value into the entry."
+
+// NOTE: Request and Response form Foldkit's public host boundary. This
+// portability rule leaves those names, plus Headers, fetch, and URL,
+// unrestricted across server entries.
+const serverRestrictedGlobals = [
+  'alert',
+  'cancelAnimationFrame',
+  'cancelIdleCallback',
+  'confirm',
+  'customElements',
+  'document',
+  'getComputedStyle',
+  'history',
+  'IntersectionObserver',
+  'localStorage',
+  'location',
+  'matchMedia',
+  'MutationObserver',
+  'navigator',
+  'prompt',
+  'requestAnimationFrame',
+  'requestIdleCallback',
+  'ResizeObserver',
+  'screen',
+  'sessionStorage',
+  'window',
+]
+
+// NOTE: tests are excluded rather than switched off in the test override
+// below. A test alongside server code often runs in a DOM environment where
+// the browser globals really do exist, and `no-restricted-globals` is a
+// general-purpose built-in rule: an `off` entry would clobber whatever
+// restricted-globals config the consuming app wrote for its own test files.
+// Oxlint replaces rule options in an override rather than merging them, so
+// inside the server patterns this entry still takes the place of an app's own
+// list. Excluding tests keeps that replacement off the files most likely to
+// carry one.
+const serverOverride: Override = {
+  files: serverFilePatterns,
+  excludeFiles: testFilePatterns,
+  rules: {
+    'no-restricted-globals': [
+      'error',
+      ...serverRestrictedGlobals.map(name => ({
+        name,
+        message: serverRestrictedGlobalMessage,
+      })),
+    ],
+  },
+}
 
 // Foldkit rules police application definitions. Tests exercise those
 // definitions rather than write them, so the rules are inert at best and
 // invert at worst (a test may legitimately hardcode a route or hand-roll a
 // Command struct). Scope every foldkit rule off in test files by default; a
 // rule that wants test coverage opts in explicitly.
-const withTestOverride = (config: Plugin.OxlintConfig): OverriddenConfig => ({
+const testOverride = (config: Plugin.OxlintConfig): Override => ({
+  files: testFilePatterns,
+  rules: Object.fromEntries(
+    Object.keys(config.rules).map((id): [string, Plugin.RuleSeverity] => [
+      id,
+      'off',
+    ]),
+  ),
+})
+
+const withOverrides = (config: Plugin.OxlintConfig): OverriddenConfig => ({
   ...config,
-  overrides: [
-    {
-      files: testFilePatterns,
-      rules: Object.fromEntries(
-        Object.keys(config.rules).map((id): [string, Plugin.RuleSeverity] => [
-          id,
-          'off',
-        ]),
-      ),
-    },
-  ],
+  overrides: [serverOverride, testOverride(config)],
 })
 
 export default {
   ...basePlugin,
   configs: {
-    recommended: withTestOverride(basePlugin.configs.recommended),
-    all: withTestOverride(basePlugin.configs.all),
+    recommended: withOverrides(basePlugin.configs.recommended),
+    all: withOverrides(basePlugin.configs.all),
   },
 }
