@@ -201,7 +201,11 @@ describe('proof pages', () => {
 
   test('submodel table of contents', () => {
     expect(tocOf(submodelSource)).toEqual([
-      { level: 'h2', id: 'overview', text: 'Overview' },
+      {
+        level: 'h2',
+        id: 'overview',
+        text: 'When to Create a Submodel',
+      },
       { level: 'h2', id: 'child-submodel', text: 'The Child Submodel' },
       { level: 'h2', id: 'embedding', text: 'Embedding the Submodel' },
       { level: 'h3', id: 'embedding-the-model', text: 'Embedding the Model' },
@@ -211,11 +215,10 @@ describe('proof pages', () => {
         text: 'Never Bypass the Child’s Update',
       },
       { level: 'h3', id: 'wrapping-messages', text: 'Wrapping Messages' },
-      { level: 'h3', id: 'delegating-in-update', text: 'Delegating in update' },
       {
         level: 'h3',
         id: 'fold-child',
-        text: 'Folding with Update.foldChild',
+        text: 'Folding Update with Update.foldChild',
       },
       {
         level: 'h3',

@@ -1,9 +1,8 @@
 import type { Document, HtmlBuilder } from 'foldkit/html'
 
-import { ClickedIncrement, Message } from './message'
-import { Model } from './model'
+import { ClickedIncrement, type Message } from './message'
+import type { Model } from './model'
 
-// ✅ View is a pure function from Model to a Document describing the page
 const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: model.title,
   body: h.div(

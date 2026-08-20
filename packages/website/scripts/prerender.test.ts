@@ -1,9 +1,11 @@
 import { Option } from 'effect'
 import { describe, expect, it } from 'vitest'
 
+import { exampleSlugs } from '../src/page/example/meta'
 import { SECTION_ORDER } from './markdown'
 import { routeToMetadata } from './metadata'
 import {
+  PLAYGROUND_ROUTES,
   STATIC_ROUTES,
   buildBlogRssFeed,
   enumerateRoutes,
@@ -28,6 +30,14 @@ describe('enumerateRoutes', () => {
       _tag: 'ApiModule',
       moduleSlug: 'runtime',
     })
+  })
+})
+
+describe('Playground routes', () => {
+  it('creates a metadata shell for every example slug', () => {
+    expect(PLAYGROUND_ROUTES).toEqual(
+      exampleSlugs.map(exampleSlug => ({ _tag: 'Playground', exampleSlug })),
+    )
   })
 })
 

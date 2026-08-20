@@ -18,27 +18,15 @@ Every Foldkit app repeats the same cycle:
 The complete cycle looks like this:
 
 ```diagram
-          +------------------------------------------------------+
-          |                                                      |
-          ↓                                                      |
-       Message                                                   |
-          |                                                      |
-          ↓                                                      |
-  +---------------+                                              |
-  |    update     |                                              |
-  +-------+-------+                                              |
-  ↓               ↓                                              |
-Model    Array<Command<Message>>                                 |
-  |               |                                              |
-  |               +-> Runtime -----------------------------------+
-  |                                                              |
-  +-> view -> Browser -> user events ----------------------------+
-  |                                                              |
-  +-> view -> Mount(Element) -> Effect<Message> -> Runtime ------+
-  |                                                              |
-  +-> Subscriptions -> Stream<Message> -> Runtime ---------------+
-  |                                                              |
-  +-> ManagedResources -> acquire/release Messages -> Runtime ---+
+Message ──▶ update ──▶ Model ──▶ view ──▶ Browser
+  ▲          │          │          │          │
+  │          │          │          │          └─ user events ─────┐
+  │          │          │          └─ Mount results ──────────────┤
+  │          │          ├─ Subscription Messages ─────────────────┤
+  │          │          └─ ManagedResource lifecycle Messages ───┤
+  │          └─ Commands ─────────────────────────────────────────┤
+  │                                                               ▼
+  └────────────────────────── Runtime ◀────────────────────────────┘
 ```
 
 Every path on the right side produces a Message that feeds back into `update`. Five sources: Commands, the Browser, Mount, Subscriptions, and ManagedResources. One loop.

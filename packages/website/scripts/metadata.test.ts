@@ -4,8 +4,11 @@ import { describe, expect, it } from 'vitest'
 import { BLOG_SECTION } from '../src/page/blog/meta'
 import { findBySlug } from '../src/page/example/meta'
 import {
+  BestPracticesKeyingRoute,
+  BestPracticesSideEffectsRoute,
   BlogPostRoute,
   ExampleDetailRoute,
+  ExamplesRoute,
   PlaygroundRoute,
 } from '../src/route'
 import { blogPosts } from './blogPosts'
@@ -14,6 +17,30 @@ import { routeToMetadata } from './metadata'
 const resolveApiModuleName = (slug: string) => slug
 
 describe('routeToMetadata', () => {
+  describe('static documentation routes', () => {
+    it('uses the rendered page title for the examples overview', () => {
+      expect(routeToMetadata(ExamplesRoute(), resolveApiModuleName).title).toBe(
+        'Examples',
+      )
+    })
+
+    it('describes every Runtime-managed side-effect boundary', () => {
+      expect(
+        routeToMetadata(BestPracticesSideEffectsRoute(), resolveApiModuleName)
+          .description,
+      ).toContain('Commands, Subscriptions, Mounts, ManagedResources')
+    })
+
+    it('does not tell readers to key branches', () => {
+      expect(
+        routeToMetadata(BestPracticesKeyingRoute(), resolveApiModuleName)
+          .description,
+      ).toBe(
+        'Use stable Model identifiers for list items and entity roots. Let view-function identity handle branches.',
+      )
+    })
+  })
+
   describe('BlogPost', () => {
     it('reports the post frontmatter for a registered slug', () => {
       const { slug, frontmatter } = Option.getOrThrow(Array.head(blogPosts))
@@ -80,7 +107,7 @@ describe('routeToMetadata', () => {
           resolveApiModuleName,
         ),
       ).toEqual({
-        title: `${example.title} playground`,
+        title: `${example.title} Playground`,
         description: `Edit and run the ${example.title} example live in your browser.`,
         section: 'Playground',
       })
