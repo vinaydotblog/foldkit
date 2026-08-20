@@ -1,5 +1,11 @@
 # create-foldkit-app
 
+## 0.27.3
+
+### Patch Changes
+
+- fca9dc3: Accept an absolute `CREATE_FOLDKIT_APP_DEPENDENCY_MANIFESTS_DIRECTORY` for repository verification. The SSR and SSG scaffold gate now generates from the example manifests in the checkout under test instead of the moving `main` branch.
+
 ## 0.27.2
 
 ### Patch Changes
